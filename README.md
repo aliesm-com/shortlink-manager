@@ -1,59 +1,70 @@
 # Shortlink Manager
 
-سرویس مدیریت لینک کوتاه با PHP — بدون نیاز به Composer روی cPanel. از SQLite یا MySQL پشتیبانی می‌کند.
+A lightweight, self-hosted URL shortener built with plain PHP. No Composer, no build step, no cron jobs — deploy on any cPanel host and start creating short links in minutes.
 
-A lightweight PHP shortlink service with an admin panel, click analytics, and a 10-second redirect interstitial page. Supports SQLite or MySQL.
+Features a polished RTL admin panel, per-link analytics, and a configurable redirect interstitial with countdown and VPN notice.
 
-## Features
+<p align="center">
+  <img src="docs/screenshots/admin-dashboard.png" alt="Admin dashboard" width="720">
+</p>
 
-- Create short links from the admin panel (auto or custom slug)
-- 10-second redirect page with VPN notice (Persian UI, RTL)
-- Click tracking and per-link analytics charts
-- SQLite (zero setup) or MySQL
-- PHP 7.4+ compatible
-- Works on cPanel with `mod_rewrite` (SQLite also needs writable `storage/`)
+---
+
+## Highlights
+
+| | |
+|---|---|
+| **Zero dependencies** | Pure PHP 7.4+ — upload and run |
+| **Dual database** | SQLite (zero config) or MySQL (cPanel-ready) |
+| **Beautiful UI** | shadcn-inspired design, RTL Persian interface, Vazirmatn font |
+| **Analytics** | Dashboard charts + per-link daily/hourly click stats |
+| **Smart redirects** | 10-second interstitial with VPN notice before destination |
+| **Flexible hosting** | Root domain, subdomain, or subdirectory (`/go`) |
+
+---
+
+## Screenshots
+
+### Admin dashboard
+
+Track total links, clicks, and performance over the last 7 days.
+
+<p align="center">
+  <img src="docs/screenshots/admin-dashboard.png" alt="Admin dashboard with stats and charts" width="680">
+</p>
+
+### Redirect interstitial
+
+Visitors see a countdown and VPN notice before being sent to the destination URL.
+
+<p align="center">
+  <img src="docs/screenshots/redirect-page.png" alt="Redirect page with countdown and VPN notice" width="400">
+</p>
+
+---
 
 ## Requirements
 
-- PHP 7.4 or higher
-- PDO extension with **SQLite** and/or **MySQL** driver
-- Apache `mod_rewrite` (default on cPanel)
+- PHP **7.4+**
+- PDO extension (`pdo_sqlite` and/or `pdo_mysql`)
+- Apache `mod_rewrite` (enabled by default on cPanel)
 
-## Installation (cPanel)
+---
 
-1. Upload files to your hosting (or `git clone`).
-2. Set **Document Root** to the `public/` folder.
-   - Alternatively, point Document Root to the project root — the root `.htaccess` forwards requests to `public/`.
-3. Copy config:
-   ```bash
-   cp app/config.example.php app/config.php
-   ```
-4. Edit `app/config.php`:
-   - Choose database driver: `db_driver` → `sqlite` or `mysql`
-   - Change `ip_salt` to a random string
-   - Set `admin_password_hash` (see below)
-   - Optionally set `base_url` (e.g. `https://yourdomain.com`)
-5. **SQLite:** Ensure `storage/` is writable (`chmod 755 storage`). Tables are created automatically.
-6. **MySQL:** Create an empty database in cPanel, then set `db_host`, `db_name`, `db_user`, `db_pass` in config. Tables are created automatically on first request.
-7. Visit your site.
-
-## Default login
-
-After copying `config.example.php`, the default password is:
-
-```
-password
-```
-
-**Change this immediately in production.**
-
-Generate a new hash:
+## Quick start (local)
 
 ```bash
-php -r "echo password_hash('your-secure-password', PASSWORD_DEFAULT);"
+git clone https://github.com/aliesm-com/shortlink-manager.git
+cd shortlink-manager
+cp app/config.example.php app/config.php
+php -S localhost:8000 -t public
 ```
 
-Paste the output into `admin_password_hash` in `app/config.php`.
+Open [http://localhost:8000/admin/login](http://localhost:8000/admin/login)
+
+**Default password:** `password` — change this before going live.
+
+---
 
 ## URL structure
 
@@ -62,216 +73,170 @@ Paste the output into `admin_password_hash` in `app/config.php`.
 | `/` | Redirects to `home_url` from config (or admin login if empty) |
 | `/admin/login` | Admin login |
 | `/admin/dashboard` | Dashboard with stats |
-| `/admin/links` | Manage links |
+| `/admin/links` | Create and manage links |
 | `/admin/links/{id}/stats` | Per-link analytics |
-| `/{slug}` | Public short link redirect |
-
-## Local development
-
-```bash
-php -S localhost:8000 -t public
-```
-
-Open http://localhost:8000/admin/login
-
-## Configuration
-
-| Key | Description |
-|-----|-------------|
-| `base_url` | Full site URL without trailing slash (auto-detected if empty) |
-| `base_path` | Subdirectory path, e.g. `go` for `example.com/go` (auto-detected if empty) |
-| `home_url` | Homepage redirect URL (empty = redirect to admin login) |
-| `db_driver` | `sqlite` (default) or `mysql` |
-| `db_path` | Path to SQLite file (when using sqlite) |
-| `db_host` | MySQL host (when using mysql) |
-| `db_port` | MySQL port (default: 3306) |
-| `db_name` | MySQL database name |
-| `db_user` | MySQL username |
-| `db_pass` | MySQL password |
-| `db_charset` | MySQL charset (default: utf8mb4) |
-| `admin_password_hash` | Bcrypt hash for admin password |
-| `ip_salt` | Salt for hashing visitor IPs |
-| `redirect_delay` | Seconds before redirect (default: 10) |
-| `login_max_attempts` | Failed logins before lockout |
-| `login_lockout_seconds` | Lockout duration |
-
-### SQLite (default)
-
-```php
-'db_driver' => 'sqlite',
-'db_path' => __DIR__ . '/../storage/database.sqlite',
-```
-
-### MySQL (cPanel)
-
-In cPanel → MySQL Databases, create a database and user, then:
-
-```php
-'db_driver' => 'mysql',
-'db_host' => 'localhost',
-'db_port' => 3306,
-'db_name' => 'cpanel_user_shortlink',
-'db_user' => 'cpanel_user_shortlink',
-'db_pass' => 'your-database-password',
-'db_charset' => 'utf8mb4',
-```
-
-## Subdirectory deployment (path خاص)
-
-بله — می‌توانی پروژه را داخل یک مسیر خاص اجرا کنی، مثلاً:
-
-```
-https://example.com/go/admin/login
-https://example.com/go/abc123
-```
-
-### روش ۱: زیرپوشه در دامنه اصلی (رایج‌ترین)
-
-1. کل پروژه را داخل `public_html/go/` آپلود کن (ساختار کامل: `app/`, `public/`, `storage/`, `.htaccess`)
-2. فایل `.htaccess` ریشه پروژه درخواست‌ها را به `public/` هدایت می‌کند
-3. در `app/config.php` تنظیم کن:
-
-```php
-'base_url' => 'https://example.com/go',
-// یا فقط:
-'base_path' => 'go',
-```
-
-4. اگر لینک‌ها یا CSS درست لود نشد، `base_url` را کامل و دستی بگذار
-
-### روش ۲: ساب‌دامین اختصاصی (پیشنهادی برای shortlink)
-
-1. در cPanel → **Subdomains** یک ساب‌دامین بساز، مثلاً `links.example.com`
-2. **Document Root** را روی پوشه `public/` پروژه بگذار:
-   ```
-   /home/username/shortlink/public
-   ```
-3. آدرس‌ها مستقیم می‌شوند:
-   ```
-   https://links.example.com/admin/login
-   https://links.example.com/abc123
-   ```
-4. نیازی به `base_path` نیست
-
-### روش ۳: دامنه جدا (Addon Domain)
-
-مثل ساب‌دامین، Document Root را روی `public/` بگذار.
+| `/{slug}` | Public short link → redirect interstitial |
 
 ---
 
-## راهنمای نصب cPanel (گام‌به‌گام)
+## Configuration
 
-### مرحله ۱: آپلود فایل‌ها
-
-**File Manager** یا FTP:
-
-```
-/home/username/shortlink/     ← پیشنهادی (خارج از public_html)
-  ├── app/
-  ├── public/                 ← Document Root
-  ├── storage/
-  └── ...
-
-یا:
-
-/home/username/public_html/go/
-  ├── app/
-  ├── public/
-  ├── storage/
-  ├── .htaccess
-  └── ...
-```
-
-### مرحله ۲: Document Root
-
-| سناریو | Document Root |
-|--------|---------------|
-| ساب‌دامین / دامنه اختصاصی | `.../shortlink/public` |
-| زیرپوشه `example.com/go` | `public_html/go` (کل پروژه اینجا) |
-
-در cPanel: **Domains** → دامنه/ساب‌دامین → **Document Root** → Edit
-
-### مرحله ۳: تنظیم config
+Copy the example config and edit `app/config.php`:
 
 ```bash
 cp app/config.example.php app/config.php
 ```
 
-در `app/config.php`:
+| Key | Description |
+|-----|-------------|
+| `base_url` | Full site URL without trailing slash (auto-detected if empty) |
+| `base_path` | Subdirectory name, e.g. `go` for `example.com/go` |
+| `home_url` | Homepage redirect URL (empty = admin login) |
+| `assets_prefix` | Custom asset path prefix (see subdirectory notes) |
+| `db_driver` | `sqlite` (default) or `mysql` |
+| `db_path` | SQLite file path |
+| `db_host` | MySQL host (usually `localhost` on cPanel) |
+| `db_port` | MySQL port (default: `3306`) |
+| `db_name` | MySQL database name |
+| `db_user` | MySQL username |
+| `db_pass` | MySQL password |
+| `db_charset` | MySQL charset (default: `utf8mb4`) |
+| `admin_password_hash` | Bcrypt hash for admin password |
+| `ip_salt` | Salt for hashing visitor IPs |
+| `redirect_delay` | Countdown seconds before redirect (default: `10`) |
+| `login_max_attempts` | Failed logins before lockout |
+| `login_lockout_seconds` | Lockout duration in seconds |
 
-```php
-// رمز ادمین — حتماً عوض کن
-'admin_password_hash' => '...',
+### Generate a password hash
 
-// برای زیرپوشه
-'base_url' => 'https://yourdomain.com/go',
-
-// دیتابیس — یکی را انتخاب کن:
-
-// SQLite (ساده‌تر)
-'db_driver' => 'sqlite',
-
-// MySQL (پایدارتر برای هاست اشتراکی)
-'db_driver' => 'mysql',
-'db_host' => 'localhost',
-'db_name' => 'username_shortlink',
-'db_user' => 'username_shortlink',
-'db_pass' => 'your-db-password',
+```bash
+php -r "echo password_hash('your-secure-password', PASSWORD_DEFAULT);"
 ```
 
-### مرحله ۴: دیتابیس MySQL (اختیاری)
+Paste the output into `admin_password_hash`.
 
-1. cPanel → **MySQL Databases**
-2. Database جدید بساز: `username_shortlink`
-3. User جدید بساز و به دیتابیس **ALL PRIVILEGES** بده
-4. مقادیر را در `config.php` وارد کن
-5. جداول خودکار ساخته می‌شوند — نیازی به import نیست
+### SQLite (default)
 
-### مرحله ۵: دسترسی‌ها
+```php
+'db_driver' => 'sqlite',
+'db_path'   => __DIR__ . '/../storage/database.sqlite',
+```
+
+Tables are created automatically. Ensure `storage/` is writable:
 
 ```bash
 chmod 755 storage
-chmod 644 app/config.php
 ```
 
-برای SQLite، پوشه `storage/` باید **writable** باشد.
+### MySQL (cPanel)
 
-### مرحله ۶: PHP Version
+Create a database and user in **cPanel → MySQL Databases**, then:
 
-cPanel → **Select PHP Version** (یا MultiPHP Manager):
+```php
+'db_driver' => 'mysql',
+'db_host'   => 'localhost',
+'db_port'   => 3306,
+'db_name'   => 'cpanel_user_shortlink',
+'db_user'   => 'cpanel_user_shortlink',
+'db_pass'   => 'your-database-password',
+'db_charset'=> 'utf8mb4',
+```
 
-- PHP **7.4** یا بالاتر
-- فعال بودن extensionهای: `pdo`, `pdo_sqlite` (یا `pdo_mysql`)
+Tables are created on first request — no manual import needed.
 
-### مرحله ۷: تست
+---
 
-| آدرس | انتظار |
+## Deployment on cPanel
+
+### Option A — Subdomain (recommended)
+
+Best for a dedicated short-link domain like `links.example.com`.
+
+1. Upload the project to your account (e.g. `/home/username/shortlink/`)
+2. In **cPanel → Domains → Subdomains**, create `links.example.com`
+3. Set **Document Root** to the `public/` folder:
+   ```
+   /home/username/shortlink/public
+   ```
+4. Copy and edit config (see above)
+5. Visit `https://links.example.com/admin/login`
+
+No `base_path` needed.
+
+### Option B — Subdirectory (e.g. `example.com/go`)
+
+1. Upload the full project to `public_html/go/` (`app/`, `public/`, `storage/`, `.htaccess`)
+2. Uncomment `RewriteBase` in both `.htaccess` files:
+   ```apache
+   RewriteBase /go/
+   ```
+3. Set in `app/config.php`:
+   ```php
+   'base_url'  => 'https://example.com/go',
+   'base_path' => 'go',
+   ```
+4. On nginx-backed hosts, static assets are served from `/go/public/assets/` — the app handles this automatically when `base_path` is set.
+
+### Option C — Addon domain
+
+Same as Option A — point Document Root to `public/`.
+
+### Checklist
+
+| Step | Action |
 |------|--------|
-| `/admin/login` | صفحه ورود |
-| ورود با رمز | داشبورد |
-| ساخت لینک | لینک کوتاه |
-| `/{slug}` | صفحه انتقال ۱۰ ثانیه‌ای |
+| 1 | Upload files via File Manager or FTP |
+| 2 | `cp app/config.example.php app/config.php` |
+| 3 | Set admin password hash and `ip_salt` |
+| 4 | Choose SQLite or MySQL |
+| 5 | `chmod 755 storage` (SQLite only) |
+| 6 | PHP 7.4+ with PDO extensions enabled |
+| 7 | Test `/admin/login`, create a link, open `/{slug}` |
 
-**نیازی به Cron، Composer، یا npm نیست.**
+No Cron, Composer, or npm required.
+
+---
+
+## Project structure
+
+```
+shortlink-manager/
+├── app/
+│   ├── Controllers/      # Request handlers
+│   ├── Models/           # Link & Click models
+│   ├── Services/         # Database, links, stats
+│   ├── Views/            # PHP templates (RTL UI)
+│   └── config.php        # Your settings (gitignored)
+├── public/
+│   ├── index.php         # Front controller
+│   ├── assets/           # CSS & JS
+│   └── .htaccess
+├── storage/              # SQLite database (gitignored)
+└── docs/screenshots/     # README images
+```
+
+---
 
 ## Troubleshooting
 
-**404 on all pages:** Enable `mod_rewrite` and ensure `.htaccess` is allowed (`AllowOverride All`).
+| Problem | Solution |
+|---------|----------|
+| **404 on all pages** | Enable `mod_rewrite`; ensure `.htaccess` is allowed (`AllowOverride All`) |
+| **CSS/JS not loading** | Set `base_url` and `base_path` for subdirectory installs; on nginx hosts assets use `/public/assets/` automatically |
+| **SQLite error** | Make sure `storage/` exists and is writable |
+| **MySQL error** | Verify credentials; host is usually `localhost` on cPanel; grant user ALL PRIVILEGES on the database |
+| **Wrong short URLs** | Set `base_url` to the full URL including path, e.g. `https://example.com/go` |
 
-**Database error (SQLite):** Check that `storage/` exists and is writable by the web server user.
+---
 
-**Database error (MySQL):** Verify `db_host`, `db_name`, `db_user`, and `db_pass`. On cPanel, the host is usually `localhost`. Ensure the MySQL user has full privileges on the database.
+## Security
 
-**CSS/JS not loading:** Confirm Document Root points to `public/` or that static files are not blocked. If using a subdirectory, set `base_url` or `base_path` in config.
-
-**Wrong links in subdirectory:** Set `base_url` to the full URL including path, e.g. `https://example.com/go`
-
-## Security notes
-
-- Never commit `app/config.php` (it is in `.gitignore`)
+- Never commit `app/config.php` (listed in `.gitignore`)
 - Use a strong admin password
 - Change `ip_salt` in production
-- Keep `storage/` and `app/` outside the web root when possible (Document Root = `public/`)
+- Keep `app/` and `storage/` outside the web root when possible (Document Root = `public/`)
+
+---
 
 ## License
 
