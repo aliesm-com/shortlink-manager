@@ -5,8 +5,10 @@ return [
     'base_url' => '',
 
     // Subdirectory path if not at domain root (e.g. "go" for example.com/go).
-    // Leave empty for auto-detection.
     'base_path' => '',
+
+    // Optional custom prefix for asset URLs (e.g. "public/assets" on some cPanel/nginx setups).
+    'assets_prefix' => '',
 
     // Redirect homepage (/) to this URL. Leave empty to redirect to admin login.
     'home_url' => '',

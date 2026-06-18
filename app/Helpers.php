@@ -51,6 +51,24 @@ class Helpers
         return $path === '' ? $base : $base . '/' . $path;
     }
 
+    /**
+     * URL for static assets (css, js). Handles subdirectory installs on nginx/cPanel.
+     */
+    public static function assetUrl(array $config, $path = '')
+    {
+        $path = ltrim($path, '/');
+
+        if (!empty($config['assets_prefix'])) {
+            return self::url($config, rtrim($config['assets_prefix'], '/') . '/' . $path);
+        }
+
+        if (!empty($config['base_path'])) {
+            return self::url($config, 'public/assets/' . $path);
+        }
+
+        return self::url($config, 'assets/' . $path);
+    }
+
     public static function shortUrl(array $config, $slug)
     {
         return self::baseUrl($config) . '/' . $slug;

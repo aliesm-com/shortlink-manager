@@ -1,2 +1,6 @@
 RewriteEngine On
+
+# If installed in a subdirectory (e.g. example.com/go), uncomment and set:
+RewriteBase /go/
+
 RewriteRule ^(.*)$ public/$1 [L]

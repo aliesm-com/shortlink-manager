@@ -7,7 +7,7 @@ use App\Helpers;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>در حال انتقال...</title>
-    <link rel="stylesheet" href="<?= Helpers::url($config, 'assets/css/app.css') ?>">
+    <link rel="stylesheet" href="<?= Helpers::assetUrl($config, 'css/app.css') ?>">
 </head>
 <body>
     <div class="redirect-page">
@@ -32,6 +32,6 @@ use App\Helpers;
         window.REDIRECT_DELAY = <?= (int) $delay ?>;
         window.REDIRECT_TARGET = <?= json_encode($link->original_url, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     </script>
-    <script src="<?= Helpers::url($config, 'assets/js/redirect.js') ?>"></script>
+    <script src="<?= Helpers::assetUrl($config, 'js/redirect.js') ?>"></script>
 </body>
 </html>

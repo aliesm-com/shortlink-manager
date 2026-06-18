@@ -37,7 +37,7 @@ ob_start();
     </main>
 </div>
 
-<script src="<?= Helpers::url($config, 'assets/js/admin.js') ?>"></script>
+<script src="<?= Helpers::assetUrl($config, 'js/admin.js') ?>"></script>
 <?php
 $content = ob_get_clean();
 require APP_PATH . '/Views/layouts/base.php';

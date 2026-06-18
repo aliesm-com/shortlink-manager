@@ -1,5 +1,13 @@
 <?php
 
+require __DIR__ . '/../app/StaticAssetServer.php';
+
+use App\StaticAssetServer;
+
+if (StaticAssetServer::serve(__DIR__)) {
+    exit;
+}
+
 $config = require __DIR__ . '/../app/bootstrap.php';
 
 use App\Router;

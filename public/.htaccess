@@ -1,4 +1,8 @@
 RewriteEngine On
+
+# If installed in a subdirectory (e.g. example.com/go), uncomment and set:
+RewriteBase /go/
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [L]
