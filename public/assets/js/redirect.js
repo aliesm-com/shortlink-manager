@@ -1,11 +1,14 @@
 (function () {
     'use strict';
 
-    var delay = window.REDIRECT_DELAY || 10;
+    var parsedDelay = parseInt(window.REDIRECT_DELAY, 10);
+    var delay = Number.isFinite(parsedDelay) && parsedDelay > 0 ? parsedDelay : 10;
     var targetUrl = window.REDIRECT_TARGET || '/';
     var countdownEl = document.getElementById('countdown');
+    var countdownWrapEl = document.querySelector('.countdown-wrap');
     var messageEl = document.getElementById('message');
     var progressEl = document.getElementById('progress');
+    var cardEl = document.querySelector('.redirect-card');
     var vpnNotice = document.getElementById('vpn-notice');
     var remaining = delay;
 
@@ -23,11 +26,17 @@
         if (messageEl) {
             messageEl.textContent = 'در حال انتقال به مقصد...';
         }
+        if (countdownWrapEl) {
+            countdownWrapEl.style.display = 'none';
+        }
         if (vpnNotice) {
             vpnNotice.classList.add('visible');
         }
-        if (countdownEl) {
-            countdownEl.textContent = '';
+        if (progressEl) {
+            progressEl.style.width = '100%';
+        }
+        if (cardEl) {
+            cardEl.classList.add('is-finished');
         }
     }
 

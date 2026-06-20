@@ -277,25 +277,43 @@ tbody tr:hover { background: var(--accent); }
 
 /* Redirect page */
 .redirect-page {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #fafafa 0%, #f4f4f5 50%, #e4e4e7 100%);
-  padding: 1.5rem;
+  padding: clamp(0.875rem, 2.2vw, 1.5rem);
 }
 
 .redirect-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 29rem;
   text-align: center;
-  padding: 2.5rem 2rem;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem) clamp(1rem, 3.5vw, 2rem);
+}
+
+.redirect-card.is-finished {
+  border-color: #fcd34d;
+}
+
+.redirect-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.875rem;
 }
 
 .redirect-icon {
-  width: 4rem;
-  height: 4rem;
-  margin: 0 auto 1.5rem;
+  width: clamp(3.25rem, 9vw, 4rem);
+  height: clamp(3.25rem, 9vw, 4rem);
+  margin: 0 auto 1rem;
   background: var(--primary);
   color: var(--primary-foreground);
   border-radius: 50%;
@@ -310,8 +328,24 @@ tbody tr:hover { background: var(--accent); }
   50% { transform: scale(1.05); opacity: 0.85; }
 }
 
-.redirect-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
-.redirect-message { color: var(--muted-foreground); font-size: 0.9375rem; margin-bottom: 1.5rem; min-height: 1.5rem; }
+.redirect-title {
+  font-size: clamp(1.1rem, 2.6vw, 1.4rem);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.redirect-message {
+  color: var(--muted-foreground);
+  font-size: clamp(0.875rem, 2.4vw, 0.95rem);
+  margin-bottom: 1rem;
+  min-height: 1.5rem;
+}
+
+.countdown-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
 
 .progress-bar {
   width: 100%;
@@ -330,10 +364,24 @@ tbody tr:hover { background: var(--accent); }
 }
 
 .countdown {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 9vw, 2.75rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 0.5rem;
+  line-height: 1.1;
+}
+
+.countdown-label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-top: 0.125rem;
+}
+
+.redirect-target {
+  margin-top: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  word-break: break-all;
 }
 
 .vpn-notice {
@@ -684,19 +732,20 @@ tbody tr:hover { background: var(--accent); }
   }
 
   .redirect-page {
-    padding: 1rem;
+    padding: 0.875rem;
   }
 
   .redirect-card {
-    padding: 2rem 1.25rem;
+    max-width: 100%;
+    padding: 1.25rem 1rem;
   }
 
   .redirect-title {
-    font-size: 1.125rem;
+    font-size: 1.05rem;
   }
 
   .countdown {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
 
   body.sidebar-open {
@@ -712,5 +761,18 @@ tbody tr:hover { background: var(--accent); }
 
   .responsive-table .table-actions .btn {
     flex: 1 1 100%;
+  }
+
+  .redirect-message {
+    margin-bottom: 0.875rem;
+  }
+
+  .progress-bar {
+    margin-bottom: 0.75rem;
+  }
+
+  .vpn-notice {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
   }
 }

@@ -12,18 +12,23 @@ use App\Helpers;
 <body>
     <div class="redirect-page">
         <div class="card redirect-card">
-            <div class="redirect-icon">
+            <div class="redirect-badge">Shortlink</div>
+            <div class="redirect-icon" aria-hidden="true">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
                 </svg>
             </div>
             <h1 class="redirect-title">در حال انتقال هستید</h1>
-            <p class="redirect-message" id="message">لطفاً چند لحظه صبر کنید...</p>
-            <div class="countdown" id="countdown"><?= (int) $delay ?></div>
+            <p class="redirect-message" id="message" aria-live="polite">لطفاً چند لحظه صبر کنید...</p>
+            <div class="countdown-wrap">
+                <div class="countdown" id="countdown"><?= (int) $delay ?></div>
+                <div class="countdown-label">ثانیه</div>
+            </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress"></div>
             </div>
-            <div class="vpn-notice" id="vpn-notice">
+            <p class="redirect-target" dir="ltr"><?= Helpers::e($link->original_url) ?></p>
+            <div class="vpn-notice" id="vpn-notice" aria-live="assertive">
                 لطفاً VPN را خاموش کنید
             </div>
         </div>
