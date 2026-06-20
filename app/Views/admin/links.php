@@ -38,7 +38,7 @@ ob_start();
         </div>
     </div>
 
-    <div class="card">
+    <div class="card hide-mobile">
         <div class="card-header">
             <h2 class="card-title">راهنما</h2>
         </div>

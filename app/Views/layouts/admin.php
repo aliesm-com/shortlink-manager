@@ -5,19 +5,6 @@ ob_start();
 <div class="admin-layout">
     <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
-    <header class="mobile-header">
-        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="باز کردن منو" aria-expanded="false">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-        </button>
-        <div class="mobile-header-brand">
-            <div class="sidebar-brand-icon">S</div>
-            <span><?= Helpers::e($pageTitle ?? 'Shortlink') ?></span>
-        </div>
-        <div class="mobile-header-spacer"></div>
-    </header>
-
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="sidebar-brand-icon">S</div>
@@ -46,6 +33,30 @@ ob_start();
         </div>
     </aside>
 
+    <div class="admin-shell">
+        <header class="mobile-header">
+            <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="باز کردن منو" aria-expanded="false">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div class="mobile-header-brand">
+                <div class="sidebar-brand-icon">S</div>
+                <span class="mobile-header-title"><?= Helpers::e($pageTitle ?? 'Shortlink') ?></span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title"><?= Helpers::e($pageTitle ?? '') ?></h1>
+                <?php if (!empty($pageSubtitle)): ?>
+                <p class="page-subtitle"><?= Helpers::e($pageSubtitle) ?></p>
+                <?php endif; ?>
+            </div>
+            <?= $innerContent ?? '' ?>
+        </main>
+    </div>
+
     <nav class="mobile-bottom-nav" aria-label="ناوبری اصلی">
         <a href="<?= Helpers::url($config, 'admin/dashboard') ?>" class="bottom-nav-item <?= ($activeNav ?? '') === 'dashboard' ? 'active' : '' ?>">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -60,16 +71,6 @@ ob_start();
             <span>خروج</span>
         </a>
     </nav>
-
-    <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title"><?= Helpers::e($pageTitle ?? '') ?></h1>
-            <?php if (!empty($pageSubtitle)): ?>
-            <p class="page-subtitle"><?= Helpers::e($pageSubtitle) ?></p>
-            <?php endif; ?>
-        </div>
-        <?= $innerContent ?? '' ?>
-    </main>
 </div>
 
 <script src="<?= Helpers::assetUrl($config, 'js/admin.js') ?>"></script>
