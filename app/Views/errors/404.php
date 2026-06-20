@@ -5,7 +5,7 @@ use App\Helpers;
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>صفحه یافت نشد</title>
     <link rel="stylesheet" href="<?= Helpers::assetUrl($config, 'css/app.css') ?>">
 </head>

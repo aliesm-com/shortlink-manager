@@ -1,28 +1,73 @@
 (function () {
     'use strict';
 
-    document.querySelectorAll('[data-copy]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var text = btn.getAttribute('data-copy');
-            if (!text) return;
+    initMobileNav();
+    initCopyButtons();
+    initCharts();
 
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(showCopied.bind(null, btn));
-            } else {
-                var ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                try {
-                    document.execCommand('copy');
-                    showCopied(btn);
-                } catch (e) {}
-                document.body.removeChild(ta);
-            }
+    function initMobileNav() {
+        var menuBtn = document.getElementById('mobileMenuBtn');
+        var closeBtn = document.getElementById('sidebarCloseBtn');
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+
+        if (!menuBtn || !sidebar || !overlay) {
+            return;
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('is-open');
+            overlay.classList.add('is-visible');
+            overlay.setAttribute('aria-hidden', 'false');
+            menuBtn.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('sidebar-open');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('is-open');
+            overlay.classList.remove('is-visible');
+            overlay.setAttribute('aria-hidden', 'true');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('sidebar-open');
+        }
+
+        menuBtn.addEventListener('click', openSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        sidebar.querySelectorAll('.nav-item').forEach(function (link) {
+            link.addEventListener('click', closeSidebar);
         });
-    });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeSidebar();
+        });
+    }
+
+    function initCopyButtons() {
+        document.querySelectorAll('[data-copy]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var text = btn.getAttribute('data-copy');
+                if (!text) return;
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(showCopied.bind(null, btn));
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try {
+                        document.execCommand('copy');
+                        showCopied(btn);
+                    } catch (e) {}
+                    document.body.removeChild(ta);
+                }
+            });
+        });
+    }
 
     function showCopied(btn) {
         var original = btn.textContent;
@@ -32,11 +77,11 @@
         }, 1500);
     }
 
-    if (typeof Chart !== 'undefined' && window.CHART_DATA) {
-        initCharts();
-    }
-
     function initCharts() {
+        if (typeof Chart === 'undefined' || !window.CHART_DATA) {
+            return;
+        }
+
         var defaults = {
             responsive: true,
             maintainAspectRatio: false,
@@ -46,13 +91,17 @@
             scales: {
                 x: {
                     grid: { display: false },
-                    ticks: { font: { family: 'Vazirmatn' } }
+                    ticks: {
+                        font: { family: 'Vazirmatn', size: 10 },
+                        maxRotation: 45,
+                        minRotation: 0
+                    }
                 },
                 y: {
                     beginAtZero: true,
                     ticks: {
                         stepSize: 1,
-                        font: { family: 'Vazirmatn' }
+                        font: { family: 'Vazirmatn', size: 10 }
                     }
                 }
             }
@@ -72,7 +121,7 @@
                             backgroundColor: 'rgba(24,24,27,0.08)',
                             fill: true,
                             tension: 0.3,
-                            pointRadius: 4,
+                            pointRadius: 3,
                             pointBackgroundColor: '#18181b'
                         }]
                     },

@@ -37,7 +37,7 @@ ob_start();
     </div>
 </div>
 
-<div class="mb-4">
+<div class="mb-4 page-actions flex gap-2">
     <a href="<?= Helpers::url($config, 'admin/links') ?>" class="btn btn-secondary btn-sm">بازگشت به لیست</a>
     <button type="button" class="btn btn-primary btn-sm copy-btn" data-copy="<?= Helpers::e(Helpers::shortUrl($config, $link->slug)) ?>">کپی لینک</button>
 </div>
@@ -74,7 +74,7 @@ ob_start();
         <p class="text-muted text-sm" style="padding: 2rem; text-align: center;">هنوز کلیکی ثبت نشده است.</p>
         <?php else: ?>
         <div class="table-wrap">
-            <table>
+            <table class="responsive-table">
                 <thead>
                     <tr>
                         <th>زمان</th>
@@ -85,11 +85,11 @@ ob_start();
                 <tbody>
                     <?php foreach ($recentClicks as $click): ?>
                     <tr>
-                        <td><?= Helpers::e($click->clicked_at) ?></td>
-                        <td class="truncate text-sm" title="<?= Helpers::e($click->user_agent ?: '') ?>">
+                        <td data-label="زمان"><?= Helpers::e($click->clicked_at) ?></td>
+                        <td data-label="مرورگر" class="truncate text-sm" title="<?= Helpers::e($click->user_agent ?: '') ?>">
                             <?= Helpers::e($click->user_agent ? substr($click->user_agent, 0, 60) : '—') ?>
                         </td>
-                        <td class="truncate text-sm" dir="ltr">
+                        <td data-label="ارجاع" class="truncate text-sm" dir="ltr">
                             <?= Helpers::e($click->referer ?: '—') ?>
                         </td>
                     </tr>

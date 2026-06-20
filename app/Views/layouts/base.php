@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?= isset($pageTitle) ? App\Helpers::e($pageTitle) . ' | ' : '' ?>Shortlink Manager</title>
     <link rel="stylesheet" href="<?= App\Helpers::assetUrl($config, 'css/app.css') ?>">
     <?php if (!empty($includeChart)): ?>

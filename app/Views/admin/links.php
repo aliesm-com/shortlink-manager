@@ -64,7 +64,7 @@ ob_start();
         <p class="text-muted text-sm" style="padding: 2rem; text-align: center;">هنوز لینکی ساخته نشده است.</p>
         <?php else: ?>
         <div class="table-wrap">
-            <table>
+            <table class="responsive-table">
                 <thead>
                     <tr>
                         <th>لینک کوتاه</th>
@@ -79,25 +79,25 @@ ob_start();
                     <?php foreach ($links as $link): ?>
                     <?php $shortUrl = Helpers::shortUrl($config, $link->slug); ?>
                     <tr>
-                        <td>
-                            <span dir="ltr" class="text-sm"><?= Helpers::e($link->slug) ?></span>
+                        <td data-label="لینک کوتاه">
+                            <span dir="ltr" class="text-sm link-slug"><?= Helpers::e($link->slug) ?></span>
                         </td>
-                        <td>
+                        <td data-label="مقصد">
                             <span class="truncate text-sm" dir="ltr" title="<?= Helpers::e($link->original_url) ?>">
                                 <?= Helpers::e($link->original_url) ?>
                             </span>
                         </td>
-                        <td><?= Helpers::e($link->title ?: '—') ?></td>
-                        <td><?= (int) $link->click_count ?></td>
-                        <td>
+                        <td data-label="عنوان"><?= Helpers::e($link->title ?: '—') ?></td>
+                        <td data-label="کلیک"><?= (int) $link->click_count ?></td>
+                        <td data-label="وضعیت">
                             <?php if ($link->is_active): ?>
                             <span class="badge badge-success">فعال</span>
                             <?php else: ?>
                             <span class="badge badge-muted">غیرفعال</span>
                             <?php endif; ?>
                         </td>
-                        <td>
-                            <div class="flex gap-2">
+                        <td data-label="عملیات">
+                            <div class="table-actions flex gap-2">
                                 <button type="button" class="btn btn-secondary btn-sm copy-btn" data-copy="<?= Helpers::e($shortUrl) ?>">کپی</button>
                                 <a href="<?= Helpers::url($config, 'admin/links/' . $link->id . '/stats') ?>" class="btn btn-ghost btn-sm">آمار</a>
                                 <form method="POST" action="<?= Helpers::url($config, 'admin/links/' . $link->id . '/toggle') ?>" class="inline-form">
